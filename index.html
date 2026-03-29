@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlowForge — Workplace Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0f0f0e;
+    --ink-soft: #4a4a46;
+    --ink-muted: #8a8a84;
+    --paper: #f5f3ee;
+    --paper-warm: #eceae3;
+    --accent: #1a3a2a;
+    --accent-bright: #2d6a4a;
+    --accent-light: #d4eddf;
+    --rule: #d0cec6;
+    --serif: 'DM Serif Display', Georgia, serif;
+    --sans: 'Instrument Sans', system-ui, sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.6;
+    font-size: 16px;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2.5rem;
+    height: 60px;
+  }
+
+  .nav-logo {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 15px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo-dot {
+    width: 8px; height: 8px;
+    background: var(--accent-bright);
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 14px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #fff !important;
+    padding: 7px 18px;
+    border-radius: 4px;
+    font-size: 14px !important;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover { background: var(--accent-bright) !important; color: #fff !important; }
+
+  /* HERO */
+  .hero {
+    padding: 7rem 2.5rem 5rem;
+    max-width: 860px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent-bright);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--accent-bright);
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent-bright);
+  }
+
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--ink-soft);
+    max-width: 540px;
+    line-height: 1.7;
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    padding: 13px 28px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s;
+    font-family: var(--sans);
+  }
+
+  .btn-primary:hover { background: var(--accent-bright); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    padding: 12px 28px;
+    border-radius: 4px;
+    border: 1px solid var(--rule);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: var(--sans);
+  }
+
+  .btn-ghost:hover { border-color: var(--ink-soft); background: var(--paper-warm); }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    margin-top: 4rem;
+    overflow: hidden;
+  }
+
+  .stat {
+    padding: 1.25rem 1.5rem;
+    border-right: 1px solid var(--rule);
+  }
+
+  .stat:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2rem;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-family: var(--mono);
+  }
+
+  /* DIVIDER */
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 0 2.5rem;
+  }
+
+  /* SERVICES */
+  .section {
+    padding: 5rem 2.5rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+    padding-top: 4px;
+  }
+
+  h2 {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    color: var(--ink);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .service-card {
+    background: var(--paper);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+
+  .service-card:hover { background: var(--paper-warm); }
+
+  .service-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent-light);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .service-icon svg { width: 18px; height: 18px; stroke: var(--accent-bright); fill: none; stroke-width: 1.8; }
+
+  .service-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-family: var(--sans);
+  }
+
+  .service-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+
+  /* PORTFOLIO */
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .portfolio-card {
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+  }
+
+  .portfolio-card:hover {
+    border-color: var(--accent-bright);
+    transform: translateY(-2px);
+  }
+
+  .portfolio-thumb {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 13px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .thumb-1 { background: #e8f4ed; }
+  .thumb-2 { background: #eef1f8; }
+  .thumb-3 { background: #f5eee8; }
+  .thumb-4 { background: #eef5ee; }
+
+  .thumb-diagram {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.8;
+  }
+
+  .thumb-box {
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--mono);
+    font-weight: 500;
+  }
+
+  .thumb-arrow {
+    font-size: 14px;
+    color: var(--ink-muted);
+  }
+
+  .portfolio-body {
+    padding: 1.25rem;
+    background: var(--paper);
+  }
+
+  .portfolio-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--accent-bright);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .portfolio-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+    font-family: var(--sans);
+  }
+
+  .portfolio-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .portfolio-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .meta-pill {
+    font-size: 11px;
+    font-family: var(--mono);
+    color: var(--ink-muted);
+    background: var(--paper-warm);
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+
+  /* PROCESS */
+  .process-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .process-step {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    transition: background 0.2s;
+  }
+
+  .process-step:last-child { border-bottom: none; }
+  .process-step:hover { background: var(--paper-warm); }
+
+  .step-num {
+    font-family: var(--serif);
+    font-size: 2rem;
+    color: var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid var(--rule);
+    padding: 1.5rem;
+    line-height: 1;
+  }
+
+  .step-body { padding: 1.5rem; }
+
+  .step-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 4px;
+    font-family: var(--sans);
+  }
+
+  .step-desc { font-size: 14px; color: var(--ink-soft); line-height: 1.6; }
+
+  /* CONTACT */
+  .contact-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .contact-intro h2 { margin-bottom: 1rem; }
+
+  .contact-intro p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .contact-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1.5rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-family: var(--mono);
+  }
+
+  .contact-item-dot {
+    width: 6px; height: 6px;
+    background: var(--accent-bright);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .contact-form {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 2rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.25rem;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    margin-bottom: 6px;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+
+  input[type="text"],
+  input[type="email"],
+  select,
+  textarea {
+    width: 100%;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-size: 14px;
+    font-family: var(--sans);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent-bright);
+  }
+
+  textarea { resize: vertical; min-height: 100px; }
+
+  .form-submit {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 13px;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+  }
+
+  .form-submit:hover { background: var(--accent-bright); }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    color: var(--ink-muted);
+    font-family: var(--mono);
+  }
+
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { color: var(--ink-muted); text-decoration: none; }
+  .footer-links a:hover { color: var(--ink); }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 1.25rem; }
+    .nav-links { display: none; }
+    .hero { padding: 4rem 1.25rem 3rem; }
+    .section { padding: 3rem 1.25rem; }
+    .hero-stats { grid-template-columns: 1fr; }
+    .stat { border-right: none; border-bottom: 1px solid var(--rule); }
+    .stat:last-child { border-bottom: none; }
+    .portfolio-grid { grid-template-columns: 1fr; }
+    .contact-wrap { grid-template-columns: 1fr; gap: 2rem; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; }
+    .section-divider { margin: 0 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    <span class="logo-dot"></span>
+    FlowForge
+  </div>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact" class="nav-cta">Book a call</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <div class="hero-tag">Workplace Automation · UK-Based</div>
+  <h1>I automate the work<br>your team <em>hates</em> doing.</h1>
+  <p class="hero-sub">Bespoke automation solutions for UK businesses — eliminating repetitive tasks, connecting your tools, and giving your team hours back every week.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Book a free discovery call</a>
+    <a href="#work" class="btn-ghost">See my work →</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">40+</div>
+      <div class="stat-label">hours saved / month</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12</div>
+      <div class="stat-label">projects delivered</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">£0</div>
+      <div class="stat-label">upfront commitment</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="services">
+  <div class="section-header">
+    <span class="section-num">01 /</span>
+    <h2>What I build</h2>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      </div>
+      <div class="service-title">Workflow automation</div>
+      <div class="service-desc">Connect your apps — CRM, email, spreadsheets, Slack — so data flows automatically without manual copying.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M17.5 14v6M14.5 17h6"/></svg>
+      </div>
+      <div class="service-title">Custom integrations</div>
+      <div class="service-desc">Your tools weren't built to talk to each other. I build the bridge using APIs, Zapier, Make, or custom code.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      </div>
+      <div class="service-title">Report & dashboard automation</div>
+      <div class="service-desc">Auto-generated weekly reports, live dashboards, and data pipelines so you always have the numbers you need.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M4.93 4.93a10 10 0 0 0 14.14 14.14"/></svg>
+      </div>
+      <div class="service-title">AI-powered processes</div>
+      <div class="service-desc">Bring AI into your existing workflows — auto-classify emails, summarise documents, draft responses at scale.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      </div>
+      <div class="service-title">Internal tools</div>
+      <div class="service-desc">Lightweight internal apps and dashboards built for your team — no off-the-shelf software that almost fits.</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.55a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </div>
+      <div class="service-title">Consultancy & audit</div>
+      <div class="service-desc">Not sure where to start? I'll audit your current workflows and map out exactly where automation will give you the biggest ROI.</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="work">
+  <div class="section-header">
+    <span class="section-num">02 /</span>
+    <h2>Recent work</h2>
+  </div>
+  <div class="portfolio-grid">
+    <div class="portfolio-card">
+      <div class="portfolio-thumb thumb-1">
+        <div class="thumb-diagram">
+          <div class="thumb-box" style="background:#b7dfc9;color:#1a3a2a">HubSpot</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#b7dfc9;color:#1a3a2a">Xero</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#b7dfc9;color:#1a3a2a">Slack</div>
+        </div>
+      </div>
+      <div class="portfolio-body">
+        <div class="portfolio-tag">SaaS · Finance</div>
+        <div class="portfolio-title">Invoice & CRM sync pipeline</div>
+        <div class="portfolio-desc">Automated invoice creation in Xero triggered by deal close in HubSpot, with Slack alerts and error handling.</div>
+        <div class="portfolio-meta">
+          <span class="meta-pill">Make.com</span>
+          <span class="meta-pill">HubSpot API</span>
+          <span class="meta-pill">8 hrs/week saved</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card">
+      <div class="portfolio-thumb thumb-2">
+        <div class="thumb-diagram">
+          <div class="thumb-box" style="background:#c5d0ea;color:#1a2a4a">Email</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#c5d0ea;color:#1a2a4a">GPT-4</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#c5d0ea;color:#1a2a4a">Notion</div>
+        </div>
+      </div>
+      <div class="portfolio-body">
+        <div class="portfolio-tag">Professional Services · AI</div>
+        <div class="portfolio-title">AI email triage & logging</div>
+        <div class="portfolio-desc">Inbound emails classified, summarised by GPT-4, and logged to Notion with priority tags — zero manual input.</div>
+        <div class="portfolio-meta">
+          <span class="meta-pill">Python</span>
+          <span class="meta-pill">OpenAI</span>
+          <span class="meta-pill">12 hrs/week saved</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card">
+      <div class="portfolio-thumb thumb-3">
+        <div class="thumb-diagram">
+          <div class="thumb-box" style="background:#e8d5c4;color:#3a1a00">Sheets</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#e8d5c4;color:#3a1a00">Python</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#e8d5c4;color:#3a1a00">PDF report</div>
+        </div>
+      </div>
+      <div class="portfolio-body">
+        <div class="portfolio-tag">Retail · Reporting</div>
+        <div class="portfolio-title">Weekly sales report automation</div>
+        <div class="portfolio-desc">Monday morning report auto-generated from Google Sheets data and emailed to stakeholders before 8am.</div>
+        <div class="portfolio-meta">
+          <span class="meta-pill">Python</span>
+          <span class="meta-pill">Google Sheets API</span>
+          <span class="meta-pill">3 hrs/week saved</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="portfolio-card">
+      <div class="portfolio-thumb thumb-4">
+        <div class="thumb-diagram">
+          <div class="thumb-box" style="background:#c4dfc6;color:#1a3a1a">Typeform</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#c4dfc6;color:#1a3a1a">Airtable</div>
+          <span class="thumb-arrow">→</span>
+          <div class="thumb-box" style="background:#c4dfc6;color:#1a3a1a">Email</div>
+        </div>
+      </div>
+      <div class="portfolio-body">
+        <div class="portfolio-tag">Agency · Onboarding</div>
+        <div class="portfolio-title">Client onboarding pipeline</div>
+        <div class="portfolio-desc">New client intake form triggers Airtable record, automated welcome email sequence, and project setup in ClickUp.</div>
+        <div class="portfolio-meta">
+          <span class="meta-pill">Zapier</span>
+          <span class="meta-pill">Airtable</span>
+          <span class="meta-pill">5 hrs/week saved</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="process">
+  <div class="section-header">
+    <span class="section-num">03 /</span>
+    <h2>How it works</h2>
+  </div>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Discovery call (free, 30 min)</div>
+        <div class="step-desc">We talk through your current processes, find the bottlenecks, and I'll tell you honestly what's worth automating and what isn't.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Proposal & fixed quote</div>
+        <div class="step-desc">You get a clear scope and a fixed price — no hourly billing surprises. I don't start until you're happy with the plan.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Build & test</div>
+        <div class="step-desc">I build the automation, test it thoroughly, and show you exactly how it works before handover.</div>
+      </div>
+    </div>
+    <div class="process-step">
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Handover & support</div>
+        <div class="step-desc">Full documentation, a walkthrough, and 30 days of support included. You own everything I build.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="contact">
+  <div class="contact-wrap">
+    <div class="contact-intro">
+      <div class="section-header" style="margin-bottom:1rem">
+        <span class="section-num">04 /</span>
+        <h2>Let's talk</h2>
+      </div>
+      <p>Tell me what's eating your team's time and I'll tell you if I can fix it. No pressure, no pitch — just an honest conversation.</p>
+      <p style="font-size:14px;color:var(--ink-muted)">Based in Greater Manchester · Working with UK businesses nationwide</p>
+      <div class="contact-detail">
+        <div class="contact-item"><span class="contact-item-dot"></span>Free 30-minute discovery call</div>
+        <div class="contact-item"><span class="contact-item-dot"></span>Fixed-price quotes, no surprises</div>
+        <div class="contact-item"><span class="contact-item-dot"></span>Typically respond within 24 hours</div>
+      </div>
+    </div>
+    <div class="contact-form">
+      <div class="form-group">
+        <label>Your name</label>
+        <input type="text" placeholder="Jane Smith">
+      </div>
+      <div class="form-group">
+        <label>Work email</label>
+        <input type="email" placeholder="jane@company.co.uk">
+      </div>
+      <div class="form-group">
+        <label>Company size</label>
+        <select>
+          <option value="">Select...</option>
+          <option>Solo / freelance</option>
+          <option>2–10 people</option>
+          <option>11–50 people</option>
+          <option>50+ people</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>What's the problem?</label>
+        <textarea placeholder="Tell me about the repetitive tasks or broken processes you'd love to fix..."></textarea>
+      </div>
+      <button class="form-submit">Send message →</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 FlowForge · Greater Manchester, UK</span>
+  <div class="footer-links">
+    <a href="#services">Services</a>
+    <a href="#work">Work</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
